@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Weather App</title>
+  
+
+  <style>
+    
+      
+      @keyframes fadeIn {
+        0% {transform: rotateX(180deg); }
+        100% {transform: rotateX(360deg); }
+      }
+    
+    body {
+  background: linear-gradient(to bottom, #8cc2f1, #00f2fe);
+  font-family: Arial, sans-serif;
+  color: #002B5B;
+  text-align: center;
+  animation: ease-in-out;
+  animation-name: fadeIn;
+  animation-duration: 2s;
+  margin-top: 175px;
+  
+}
+#head2{
+text-align: center;
+
+font-size: 36px;
+}
+
+.box{
+   
+    width: 90%;
+    height: 90%;
+  max-width: 500px;
+  background: rgba(255, 255, 255, 0.1);
+  padding: 20px;
+  border-radius: 20px;
+  box-shadow: 0px 8px 20px rgba(0,0,0,0.3);
+  position: relative;
+
+
+}
+
+.display {
+  justify-content: center;
+  
+  margin-top: 50px;
+  margin-left: 200px;
+  border-radius: 100px;
+  padding: 1px;
+  width: 800px;
+  box-shadow: 0px 4px 15px rgba(0,0,0,0.2);
+  background-color: rgb(214, 249, 249);
+  
+}
+#cityName{
+border-radius: 18px;
+border-color: lightgrey;
+padding: 8px;
+justify-content: left;
+margin-top: 10px;
+width: 500px;
+align-items: flex-start;
+justify-content: flex-start;
+text-align: left; 
+
+
+}
+
+</style>
+</head>
+
+<body>
+  <h2 id="head2"><u>CloudMate</u></h2>
+  
+
+    
+<div class="box" style="position: relative;">
+  <div class="display" style="position: inherit;">
+    <nav>
+    <form id="weatherForm">
+    <img src="magnifying-glass-solid-full.svg" id="id1" width="20px" height="20px" style="position: absolute; margin-top: 20px; margin-left: 10px; opacity: 0.9; " />
+    <input type="text" id="cityName"  />
+     
+
+  </form>
+  </nav>
+  
+  
+
+    <h1 class="name"></h1>
+    <p class="desc"></p>
+    <p class="temp"></p>
+    <p class="windspeed"></p>
+  
+   </div>
+</div>
+
+  <script>
+    
+    document.getElementById("cityName").addEventListener("focus", function() {
+      document.getElementById("id1").style.display = "none";
+  });
+ 
+    const apiKey = "c3c1ede2ab8eb96a558d4074bce70620"; 
+
+    const weatherForm = document.querySelector("#weatherForm");
+    const cityInput = document.querySelector("#cityName");
+    const descElement = document.querySelector(".desc");
+    const tempElement = document.querySelector(".temp");
+    const windSpeedElement = document.querySelector(".windspeed");
+    const nameElement = document.querySelector(".name");
+
+    weatherForm.addEventListener("submit", function (e) {
+      e.preventDefault();
+
+      const city = cityInput.value.trim();
+      if (!city) {
+        alert("Please enter a city name!");
+        return;
+      }
+
+      // Fetch weather using city name
+      fetch(`https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKey}`)
+        .then(res => res.json())
+        .then(data => {
+          if (data.cod !== 200) {
+            nameElement.innerHTML = "City not found!";
+            descElement.innerHTML = "";
+            tempElement.innerHTML = "";
+            windSpeedElement.innerHTML = "";
+            return;
+          }
+
+          const description = data.weather[0].description;
+          const tempK = data.main.temp;
+          const windSpeed = data.wind.speed;
+
+      
+
+          // Convert Kelvin to Celsius
+          const tempC = (tempK - 273.15).toFixed(1);
+
+          // Update DOM
+          nameElement.innerHTML = data.name;
+          descElement.innerHTML = `Weather: ${description}`;
+          tempElement.innerHTML = `Temperature: ${tempC} °C`;
+          windSpeedElement.innerHTML = `Wind Speed: ${windSpeed} m/s`;
+        })
+        .catch(err => {
+          console.error("Error fetching weather data:", err);
+          nameElement.innerHTML = "Error fetching data.";
+          descElement.innerHTML = "";
+          tempElement.innerHTML = "";
+          windSpeedElement.innerHTML = "";
+        });
+    });
+  
+  </script>
+</body>
+
+</html>
